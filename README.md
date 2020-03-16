@@ -10,6 +10,8 @@ Medium post on building the first version from scratch:  https://becominghuman.a
 ## Available models
  - Resnet-18 (CPU, GPU)
  	- Returns vector length 512
+ - Resnet-50 (CPU, GPU)
+  - Returns vector length 512
  - Alexnet (CPU, GPU)
  	- Returns vector length 4096
 

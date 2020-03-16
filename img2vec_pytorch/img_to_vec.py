@@ -6,7 +6,7 @@ import numpy as np
 
 class Img2Vec():
 
-    def __init__(self, cuda=False, model='resnet-18', layer='default', layer_output_size=512):
+    def __init__(self, cuda=False, model='resnet-50', layer='default', layer_output_size=512):
         """ Img2Vec
         :param cuda: If set to True, will run forward pass on GPU
         :param model: String name of requested model
@@ -16,7 +16,7 @@ class Img2Vec():
         self.device = torch.device("cuda" if cuda else "cpu")
         self.layer_output_size = layer_output_size
         self.model_name = model
-        
+
         self.model, self.extraction_layer = self._get_model_and_layer(model, layer)
 
         self.model = self.model.to(self.device)
@@ -36,7 +36,7 @@ class Img2Vec():
         """
         if type(img) == list:
             a = [self.normalize(self.to_tensor(self.scaler(im))) for im in img]
-            images = torch.stack(a).to(self.device) 
+            images = torch.stack(a).to(self.device)
             if self.model_name == 'alexnet':
                 my_embedding = torch.zeros(len(img), self.layer_output_size)
             else:
@@ -82,12 +82,22 @@ class Img2Vec():
 
     def _get_model_and_layer(self, model_name, layer):
         """ Internal method for getting layer from model
-        :param model_name: model name such as 'resnet-18'
-        :param layer: layer as a string for resnet-18 or int for alexnet
+        :param model_name: model name such as 'resnet-50'
+        :param layer: layer as a string for resnet-50 or int for alexnet
         :returns: pytorch model, selected layer
         """
         if model_name == 'resnet-18':
             model = models.resnet18(pretrained=True)
+            if layer == 'default':
+                layer = model._modules.get('avgpool')
+                self.layer_output_size = 512
+            else:
+                layer = model._modules.get(layer)
+
+            return model, layer
+
+        elif model_name == 'resnet-50':
+            model = models.resnet50(pretrained=True)
             if layer == 'default':
                 layer = model._modules.get('avgpool')
                 self.layer_output_size = 512

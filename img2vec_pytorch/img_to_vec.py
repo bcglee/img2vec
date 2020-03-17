@@ -6,7 +6,7 @@ import numpy as np
 
 class Img2Vec():
 
-    def __init__(self, cuda=False, model='resnet-50', layer='default', layer_output_size=512):
+    def __init__(self, cuda=False, model='resnet-50', layer='default', layer_output_size=2048):
         """ Img2Vec
         :param cuda: If set to True, will run forward pass on GPU
         :param model: String name of requested model
@@ -100,7 +100,7 @@ class Img2Vec():
             model = models.resnet50(pretrained=True)
             if layer == 'default':
                 layer = model._modules.get('avgpool')
-                self.layer_output_size = 512
+                self.layer_output_size = 2048
             else:
                 layer = model._modules.get(layer)
 
